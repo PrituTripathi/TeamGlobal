@@ -1,0 +1,265 @@
+﻿@model TeamGlobal.Infrastructure.ViewModel.DisplayViewModel
+<link href="https://fonts.googleapis.com/css?family=Pontano+Sans" rel="stylesheet">
+<div class="row">
+
+    @if (Model != null && Model.SearchResultViewModel != null && Model.SearchResultViewModel.Count > 0)
+    {
+
+        <style>
+            .gfont {
+                font-size: 16px;
+                font-family: 'Pontano Sans', sans-serif;
+                font-weight: 400;
+               
+            }
+
+
+
+            .blue-fill-table {
+                background: #32BBDF;
+                color: #fff;
+                font-size: 16px;
+                padding: 5px 10px;
+                vertical-align: top;
+            }
+        </style>
+      
+
+
+                    <table cellpadding="0" cellspacing="0" width="100%" class="blue-fill-table" style="font-family:'Pontano Sans',sans-serif;">
+                        <tr>
+                            <div id="infoBar1">
+                                <td colspan="2">&nbsp;</td>
+                                <td colspan="2">
+                                    <label class="gfont">Origin :</label>
+
+                                    <label id="lblOrigin" class="gfont"></label>
+                                </td>
+                                <td colspan="2">
+                                    <label class="gfont">Destination :</label>
+
+
+                                    <label id="lblDestination" class="gfont"></label>
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Excel", "ExportExcel", "Home", new { fromDate = Model.FromDate, toDate = Model.ToDate, fromSource = Model.FromSource, toDestination = Model.ToDestination }, new { @class = "form-control btn-info text-center", @role = "button" })
+                                </td>
+                        </tr>
+
+                    </table>
+                    <hr />
+                    if (!Model.IsMergeResut)
+                    {
+                    <div class="col-lg-12 text-left" style="font-size:18px;">
+                        Displaying <label>@Model.SearchResultViewModel.Count()</label>  vessels based on searching cutoff dates between <label>@Convert.ToString(Model.FromDate)</label>  and <label>@Convert.ToString(Model.ToDate)</label>
+                    </div>
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#home">@string.Format("{0} - {1}", Convert.ToString(Model.FromSource), Convert.ToString(Model.ToDestination))</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+
+                        <div id="home" class="tab-pane fade in active">
+
+
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr style="background:#f9f9f9 ; line-height:50px;text-align:center;border-top:1px; " class="gfont">
+                                        <!-- Modified by schemate under mission 27981 -->
+                                        <th style="font-size: 13px;display: table-cell;vertical-align: inherit; ">Direct / Transship.</th>
+                                        <th style="font-size: 13px;display: table-cell;vertical-align: inherit; ">Vessel/Voyage</th>
+                                        <th style="font-size: 13px;display: table-cell;vertical-align: inherit; ">Cut-off Date/Time</th>
+                                        <th style="font-size: 13px;display: table-cell;vertical-align: inherit; " class="mob-two-col">ETD</th>
+                                        <th style="font-size: 13px;display: table-cell;vertical-align: inherit; ">ETA CFS</th>
+                                        <th style="font-size: 13px;display: table-cell;vertical-align: inherit; ">Port of Loading</th>
+                                        <th style="font-size: 13px;display: table-cell;vertical-align: inherit; ">Transit Time<br>Cut-Off<br>Origin CFS<br>to Port Of<br>Discharge</th>
+                                        <th style="font-size: 13px;display: table-cell;vertical-align: inherit; ">Transit Time<br>Port of<br>Loading to Port of<br>Discharge</th>
+                                        <th style="font-size: 13px;display: table-cell;vertical-align: inherit; ">Transit Time<br>Port of<br>Loading to CFS<br>Destination</th>
+                                        <th style="font-size: 13px;display: table-cell;vertical-align: inherit; ">Transit Time<br>Cut-Off<br>Origin CFS<br>to CFS <br>Destination</th>
+                                        @if (Model.IsFromIndia)
+                                        {
+                                            <th style="font-size: 13px; ">Details</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var searchResult in Model.SearchResultViewModel)
+                                    {
+                                        <tr>
+                                            <td>@searchResult.DirectTransship</td>
+                                            <td>@searchResult.VesselVoyage</td>
+                                            <td>@searchResult.CutOffDate</td>
+                                            <td>@searchResult.ETD</td>
+                                            <td>@searchResult.ETA</td>
+                                            <td>@searchResult.PortOfLoading</td>
+                                            <td>@searchResult.TransitTimeCutOffOriginCFStoPortOfDischarge</td>
+                                            <td>@searchResult.TransitTimePortofLoadingtoPortofDischarge</td>
+                                            <td>@searchResult.TransitTimePortofLoadingtoCFSDestination</td>
+                                            <td>@searchResult.TransitTimeCutOffOriginCFStoCFSDestination</td>
+                                            @if (Model.IsFromIndia)
+                                            {
+                                                if (searchResult.IsFromIndia)
+                                                {
+                                                    <td atr="searchResult.CutOffDate">
+                                                        <button data-result="@searchResult.CutOffDate" class="form-control btn-warning" id="bookNow">Book</button>
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw("&nbsp;")
+                                                }
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    }
+                    else
+                    {
+
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#home">@string.Format("{0} - {1}", Model.FromSource, Model.RoutedBy)</a></li>
+                        <li><a data-toggle="tab" href="#menu1">@string.Format("{0} - {1}", Model.RoutedBy, Model.ToDestination)</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div id="home" class="tab-pane fade in active">
+                            <br />
+                            <br />
+                            <br />
+                            <div class="col-lg-12 text-center">
+                                Displaying <label>@Model.SearchResultViewModel.Where(x => x.IsRouteFromAtoB == true).Count()</label>  vessels based on searching cutoff dates between <label>@Convert.ToString(Model.FromDate)</label>  and <label>@Convert.ToString(Model.ToDate)</label>
+                            </div>
+
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <!-- Modified by schemate under mission 27981 -->
+                                        <th style="font-size: 13px; ">Direct / Transship.</th>
+                                        <th style="font-size: 13px; ">Vessel/Voyage</th>
+                                        <th style="font-size: 13px; ">Cut-off Date/Time</th>
+                                        <th style="font-size: 13px; " class="mob-two-col">ETD</th>
+                                        <th style="font-size: 13px; ">ETA CFS</th>
+                                        <th style="font-size: 13px; ">Port of Loading</th>
+                                        <th style="font-size: 13px; ">Transit Time<br>Cut-Off<br>Origin CFS<br>to Port Of<br>Discharge</th>
+                                        <th style="font-size: 13px; ">Transit Time<br>Port of<br>Loading to Port of<br>Discharge</th>
+                                        <th style="font-size: 13px; ">Transit Time<br>Port of<br>Loading to CFS<br>Destination</th>
+                                        <th style="font-size: 13px; ">Transit Time<br>Cut-Off<br>Origin CFS<br>to CFS <br>Destination</th>
+                                        @if (Model.IsFromIndia)
+                                        {
+                                            <th style="font-size: 13px; ">Details</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var searchResult in Model.SearchResultViewModel.Where(x => x.IsRouteFromAtoB == true))
+                                    {
+                                        <tr>
+                                            <td>@searchResult.DirectTransship</td>
+                                            <td>@searchResult.VesselVoyage</td>
+                                            <td>@searchResult.CutOffDate</td>
+                                            <td>@searchResult.ETD</td>
+                                            <td>@searchResult.ETA</td>
+                                            <td>@searchResult.PortOfLoading</td>
+                                            <td>@searchResult.TransitTimeCutOffOriginCFStoPortOfDischarge</td>
+                                            <td>@searchResult.TransitTimePortofLoadingtoPortofDischarge</td>
+                                            <td>@searchResult.TransitTimePortofLoadingtoCFSDestination</td>
+                                            <td>@searchResult.TransitTimeCutOffOriginCFStoCFSDestination</td>
+                                            @if (Model.IsFromIndia)
+                                            {
+                                                if (searchResult.IsFromIndia)
+                                                {
+                                                    <td atr="searchResult.CutOffDate">
+                                                        <button data-result="@searchResult.CutOffDate" class="form-control btn-warning" id="bookNow">Book</button>
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw("&nbsp;")
+                                                }
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="menu1" class="tab-pane fade">
+                            <br />
+                            <br />
+                            <br />
+                            <div class="col-lg-12 text-center">
+                                Displaying <label>@Model.SearchResultViewModel.Where(x => x.IsRouteFromAtoB == false).Count()</label>  vessels based on searching cutoff dates between <label>@Convert.ToString(Model.FromDate)</label>  and <label>@Convert.ToString(Model.ToDate)</label>
+                            </div>
+
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <!-- Modified by schemate under mission 27981 -->
+                                        <th style="font-size: 13px; ">Direct / Transship.</th>
+                                        <th style="font-size: 13px; ">Vessel/Voyage</th>
+                                        <th style="font-size: 13px; ">Cut-off Date/Time</th>
+                                        <th style="font-size: 13px; " class="mob-two-col">ETD</th>
+                                        <th style="font-size: 13px; ">ETA CFS</th>
+                                        <th style="font-size: 13px; ">Port of Loading</th>
+                                        <th style="font-size: 13px; ">Transit Time<br>Cut-Off<br>Origin CFS<br>to Port Of<br>Discharge</th>
+                                        <th style="font-size: 13px; ">Transit Time<br>Port of<br>Loading to Port of<br>Discharge</th>
+                                        <th style="font-size: 13px; ">Transit Time<br>Port of<br>Loading to CFS<br>Destination</th>
+                                        <th style="font-size: 13px; ">Transit Time<br>Cut-Off<br>Origin CFS<br>to CFS <br>Destination</th>
+                                        @if (Model.IsFromIndia)
+                                        {
+                                            if (Model.SearchResultViewModel.Where(x => x.IsRouteFromAtoB == false).Any(x => x.IsFromIndia == true))
+                                            {
+                                                <th style="font-size: 13px; ">Details</th>
+                                            }
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var searchResult in Model.SearchResultViewModel.Where(x => x.IsRouteFromAtoB == false))
+                                    {
+                                        <tr>
+                                            <td>@searchResult.DirectTransship</td>
+                                            <td>@searchResult.VesselVoyage</td>
+                                            <td>@searchResult.CutOffDate</td>
+                                            <td>@searchResult.ETD</td>
+                                            <td>@searchResult.ETA</td>
+                                            <td>@searchResult.PortOfLoading</td>
+                                            <td>@searchResult.TransitTimeCutOffOriginCFStoPortOfDischarge</td>
+                                            <td>@searchResult.TransitTimePortofLoadingtoPortofDischarge</td>
+                                            <td>@searchResult.TransitTimePortofLoadingtoCFSDestination</td>
+                                            <td>@searchResult.TransitTimeCutOffOriginCFStoCFSDestination</td>
+                                            @if (Model.IsFromIndia)
+                                            {
+                                                if (searchResult.IsFromIndia)
+                                                {
+                                                    <td atr="searchResult.CutOffDate">
+                                                        <button data-result="@searchResult.CutOffDate" class="form-control btn-warning" id="bookNow">Book</button>
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    @Html.Raw("&nbsp;")
+                                                }
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    }
+
+                    }
+                    else
+                    {
+                    <hr />
+                    <div class="col-lg-12 text-center">No Data Found</div>
+                    <hr />
+                    }
+            </div>
+          

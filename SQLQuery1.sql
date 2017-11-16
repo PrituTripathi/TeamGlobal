@@ -1,0 +1,1 @@
+﻿Select * from Location where Location.CODE = 'INNSA'

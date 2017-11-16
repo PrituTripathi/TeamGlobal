@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @*@Styles.Render("~/Content/css")*@
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    @*@Styles.Render("~/Content/datetimepicker")*@
+    <script src="https://use.fontawesome.com/802b49eeb0.js"></script>
+
+
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+
+    @*<div class="container-fluid" style="margin:0px;padding:0px;">
+<div class="row">
+        <div class="col-lg-6 pull-left">
+            
+            </div>
+        <div class="col-lg-6 pull-right">
+            Sailing Schedule
+        </div>
+    </div>
+        </div>*@
+
+   <div class="navbar navbar-inverse navbar-fixed-top" style="background:white;border:white;">
+        <div class="container">
+            <div class="navbar-header">
+             
+                <img src="~/Content/images/teamglobal_logo.jpg" />
+                @*@Html.ActionLink("Team Global", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+
+
+            </div>
+            <div class="navbar-collapse collapse navbar-right">
+                <ul class="nav navbar-nav" style="color:#32BCE0;font-family:'Pontano Sans',sans-serif;font-size:24px;font-weight:100;">
+                 <li><div style="margin-top:30px;"><i class="fa fa-ship" aria-hidden="true"></i> Sailing Schedule</div></li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content" style="margin-top:50px;">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+  
+    @RenderSection("scripts", required: false)
+</body>
+</html>
